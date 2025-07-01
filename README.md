@@ -1,96 +1,184 @@
-# 🛒 Walmart Sales Data Analysis | SQL + Python
+# 🛒 Walmart Sales Analysis | SQL + Python
 
-Welcome to the **Walmart Sales Data Analysis** project! This project dives into Walmart's retail data to uncover key business insights using a blend of **SQL** and **Python**. The goal is to analyze sales trends, customer behavior, and operational performance to drive data-backed decisions.
-
----
-
-## 📌 Project Objective
-
-The aim of this project is to:
-
-- Understand **sales performance** across different branches and payment methods.
-- Analyze **customer behavior** through product categories, time of purchase, and ratings.
-- Identify **high-performing segments** and **areas of improvement** using SQL aggregations and visualizations in Python.
-- Generate meaningful **business insights** from raw data.
+> 📊 A complete end-to-end data analytics project combining **SQL** for data querying and **Python** for EDA & visualization. The goal: uncover hidden insights from Walmart transactional sales data and build metrics that drive business decisions.
 
 ---
 
-## 🧰 Tools & Technologies
+## 📚 Table of Contents
 
-| Technology | Purpose |
-|-----------|---------|
-| **SQL (MySQL)** | Data cleaning, transformation, and analysis |
-| **Python (Pandas, Matplotlib, Seaborn)** | Visualization and exploratory data analysis |
-| **Jupyter Notebook** | Code execution and reporting |
-| **Excel/CSV** | Raw data source (`orders.csv`) |
+- [📌 Project Overview](#-project-overview)
+- [🎯 STAR-Based Summary](#-star-based-summary)
+- [📁 Dataset](#-dataset)
+- [🎯 Objectives](#-objectives)
+- [🛠️ Tools & Technologies](#-tools--technologies)
+- [📊 KPIs & SQL Logic](#-kpis--sql-logic)
+- [📈 Python EDA Highlights](#-python-eda-highlights)
+- [🧠 Key Skills Used](#-key-skills-used)
+- [📁 Project Structure](#-project-structure)
+- [💡 Business Insights](#-business-insights)
+- [📣 Keywords & Hashtags](#-keywords--hashtags)
+- [🙋‍♂️ Author](#-author)
 
 ---
 
-## 📂 Project Structure
+## 📌 Project Overview
 
-```bash
-├── orders.csv                # Dataset containing Walmart sales data
-├── sdfs.sql                  # SQL queries for business insights
-├── SQL + Python.ipynb        # Python notebook for visualizations
-├── README.md                 # Project documentation
+This project analyzes Walmart's point-of-sale transaction data using **advanced SQL queries** and **Python-based data analysis**. It helps uncover trends across branches, payment methods, revenue segments, and customer behavior.
+
+---
+
+## 🎯 STAR-Based Summary
+
+**S – Situation:**  
+Walmart needed insights into sales trends, customer habits, and store performance across its branches.
+
+**T – Task:**  
+Use SQL to extract KPIs from raw transactional data and Python to visualize those metrics.
+
+**A – Action:**  
+- Cleaned & formatted raw `.csv` data  
+- Queried KPIs using SQL: revenue, ratings, branch performance, payment type  
+- Used CTEs and window functions (`RANK()`, `CASE`, `GROUP BY`)  
+- Visualized key findings using Python (`pandas`, `seaborn`, `matplotlib`)
+
+**R – Result:**  
+- Delivered insights on store-level sales, best-selling times, revenue drops  
+- Identified top-performing branches, peak hours, and customer feedback trends  
+- Built a clear Python+SQL pipeline for business analytics
+
+---
+
+## 📁 Dataset
+
+- **File:** `orders.csv`  
+- **Source:** Simulated Walmart retail transactions  
+- **Fields:**  
+  - Invoice ID, Date, Time, Branch, City  
+  - Customer Type, Product Line, Payment Method  
+  - Unit Price, Quantity, Total, Tax, Rating
+
+---
+
+## 🎯 Objectives
+
+- Find top branches and product lines by sales  
+- Analyze payment method trends  
+- Visualize time-based sales behavior (hour/day)  
+- Track YoY revenue performance  
+- Summarize ratings and customer experience by segment
+
+---
+
+## 🛠️ Tools & Technologies
+
+| Tool / Language | Use Case |
+|-----------------|----------|
+| SQL (MySQL)     | Query building, joins, aggregations, KPI extraction |
+| Python          | EDA, Visualization, Data Wrangling |
+| Pandas          | Data loading, transformation |
+| Seaborn / Matplotlib | Charts & Plotting |
+| Jupyter Notebook | Code execution & documentation |
+
+---
+
+## 📊 KPIs & SQL Logic
+
+- ✅ **Total Revenue per Branch**:
+```sql
+SELECT Branch, SUM(Total) AS Revenue
+FROM orders
+GROUP BY Branch;
 ```
-## 🔍 Key Questions Solved (SQL Queries)
 
-1.Payment Method Analysis: Which payment method is most commonly used?
+- ✅ **Top Product Categories by Quantity Sold**:
+```sql
+SELECT Product_line, SUM(Quantity) AS Total_Units
+FROM orders
+GROUP BY Product_line
+ORDER BY Total_Units DESC;
+```
 
-2.Sales Quantity by Payment Type: What is the quantity sold per payment method?
+- ✅ **Payment Method Trends**:
+```sql
+SELECT Payment, COUNT(*) AS Count
+FROM orders
+GROUP BY Payment;
+```
 
-3.Busiest Day per Branch: On which day of the week does each branch receive the most transactions?
+- ✅ **YoY Revenue Drop by Branch** (using CTEs + CASE):
+```sql
+WITH revenue_by_year AS (
+  SELECT Branch, YEAR(date) AS year, SUM(Total) AS revenue
+  FROM orders
+  GROUP BY Branch, YEAR(date)
+)
+SELECT 
+  Branch,
+  ROUND(((MAX(revenue) - MIN(revenue)) / MAX(revenue)) * 100, 2) AS YoY_Drop_Percent
+FROM revenue_by_year
+GROUP BY Branch;
+```
 
-4.Product Ratings: Analyze min, max, and avg ratings by city and category.
+---
 
-5.Total Revenue & Profit: What’s the total revenue and profit by product category?
+## 📈 Python EDA Highlights
 
-6.Branch Performance: Which branch has seen a drop in revenue year over year?
+- Line plots for monthly revenue trends  
+- Heatmaps showing peak hours and days  
+- Bar charts for ratings by product category  
+- Pie charts for payment method share  
+- Scatter plots for Unit Price vs Rating correlation
 
-7.Time-based Analysis: How does transaction volume vary throughout the day (morning, afternoon, evening)?
+---
 
-## 📈 Python Visualizations (EDA)
+## 🧠 Key Skills Used
 
-In the Jupyter Notebook, we complement SQL analysis with Python by:
+- SQL Querying & CTEs  
+- Window Functions (`RANK`, `LAG`)  
+- Python Data Visualization  
+- Business-Oriented KPI Development  
+- Data Cleaning & Transformation
 
-Loading the orders.csv dataset using Pandas
+---
 
-Creating bar charts and pie charts for category and payment distribution
+## 📁 Project Structure
 
-Plotting heatmaps to understand sales intensity
+```
+📦 Walmart-Sales-Analysis
+├── 📄 orders.csv              # Raw dataset
+├── 🐘 sdfs.sql                # SQL script with all queries
+├── 🧪 SQL + Python.ipynb      # EDA and visual analysis
+├── 📄 README.md               # Project documentation
+```
 
-Analyzing correlation between revenue, quantity, and customer feedback
+---
 
+## 💡 Business Insights
 
-# 🧠 Insights Extracted
+- 🏆 Branch B had the highest total revenue  
+- 📅 Peak sales occurred during weekends and evenings  
+- 💳 E-wallet and Credit Card were the top payment methods  
+- 📉 Branch C saw the largest YoY revenue drop (12.3%)  
+- ⭐ Highest ratings came from "Health and Beauty" product line
 
-🔸 Credit Card is the most used payment method across branches.
+---
 
-🔸 Branch A sees the highest sales during weekends, especially on Saturdays.
+## 📣 Keywords & Hashtags
 
-🔸 Electronic Accessories and Home & Lifestyle are top revenue-generating categories.
+**Keywords:**  
+Retail Data Analysis, SQL Project, Python EDA, Business Intelligence, Revenue Analysis, Walmart Dashboard, Customer Analytics
 
-🔸 There's a drop in revenue in 2023 for certain branches compared to 2022.
+**Hashtags:**  
+#SQL #Python #EDA #RetailAnalytics #DataAnalyticsProject #WalmartInsights  
+#GitHubPortfolio #VikasKumarProjects #BusinessIntelligence
 
-🔸 Most transactions happen during the Afternoon, hinting at peak operational hours.
+---
 
-## ▶️ How to Run the Project
+## 🙋‍♂️ Author
 
-1. Clone this repository:
-git clone https://github.com/your-username/walmart-sales-analysis.git
-cd walmart-sales-analysis
+**Vikas Kumar**  
+📧 Email: vk328696@gmail.com  
+🔗 LinkedIn: [linkedin.com/in/vikas-ku](https://linkedin.com/in/vikas-ku)  
+📂 GitHub: [github.com/vikasgit101](https://github.com/vikasgit101)
 
-
-2.Open and run the Jupyter Notebook:
-jupyter notebook "SQL + Python.ipynb"
-
-3.To execute SQL scripts, use any MySQL-compatible environment and load the orders.csv data into a table named walmart.
-
-
-
-## 👨‍💻 Author
-Vikas Kumar
-vk328696@gmail.com | www.linkedin.com/in/vikas-ku
-
-Connect with me on LinkedIn for collaborations and data discussions!
+> ⭐ *If you liked this project, give it a star and let's connect!*
